@@ -3,7 +3,6 @@ package sys.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sys.entity.Expert;
-import sys.exceptions.DuplicateException;
 import sys.exceptions.NotFoundException;
 import sys.repository.ExpertRepository;
 import sys.service.ExpertService;
@@ -16,19 +15,16 @@ public class ExpertServiceImpl implements ExpertService {
 
     @Override
     public Expert saveExpert(Expert expert) {
-        if (expertRepository.findByPhoneNumberAndPassword(expert.getPhoneNumber(), expert.getPassword()).isPresent()) {
-            throw new DuplicateException(
-                    expert.getFirstName() + " has already been registered in the database!"
-            );
-        }
         return expertRepository.save(expert);
     }
+
 
     @Override
     public Expert getExpertById(Long expertId) {
         return expertRepository.findById(expertId)
-                .orElseThrow(() -> new NotFoundException("Expert not found with ID: " + expertId));
+                .orElseThrow(() -> new NotFoundException("No such expert"));
     }
+
 
     @Override
     public void deleteExpert(Long expertId) {
@@ -37,6 +33,9 @@ public class ExpertServiceImpl implements ExpertService {
         }
         expertRepository.deleteById(expertId);
     }
+
+    // TODO: 7/1/2024
+
 
 }
 
